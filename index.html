@@ -1,0 +1,356 @@
+
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Валентинка — Приглашение на свидание</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500,700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#fff0f4; --bg2:#fff7eb; --bg3:#ffe7f0;
+    --accent:#ff496f; --accent-2:#ff97b2; --accent-3:#ffcf8b;
+    --ink:#2d0f1d; --muted:#5b3a45; --card:#ffffff;
+    --glass: rgba(255,255,255,0.7);
+    --shadow: 0 32px 80px rgba(60,13,32,0.14);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Manrope,system-ui,Arial,sans-serif;color:var(--ink);background:
+    radial-gradient(1200px 700px at 10% -10%, var(--bg3), transparent 60%),
+    radial-gradient(900px 600px at 90% 0%, #fff2c7, transparent 60%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));}
+
+  /* floating hearts */
+  .hearts{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+  .heart{position:absolute;width:28px;height:28px;transform:translateY(0) rotate(0deg);opacity:0.9}
+  .heart svg{width:100%;height:100%;display:block}
+  @keyframes floatUp{to{transform:translateY(-140vh) rotate(360deg);opacity:0.05}}
+
+  /* background orbs */
+  .bg-orbs{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+  .bg-orbs span{position:absolute;border-radius:50%;filter:blur(12px);opacity:0.55;mix-blend-mode:multiply}
+  .bg-orbs .o1{width:420px;height:420px;left:-120px;top:30vh;background:radial-gradient(circle at 30% 30%, #ffd1dd, #ff9bb5)}
+  .bg-orbs .o2{width:520px;height:520px;right:-180px;top:-120px;background:radial-gradient(circle at 40% 40%, #ffe0b5, #ffb39c)}
+  .bg-orbs .o3{width:360px;height:360px;right:5vw;bottom:-160px;background:radial-gradient(circle at 30% 30%, #ffd6e6, #ff86a5)}
+
+  /* layout */
+  .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:44px;position:relative;z-index:1}
+  .card{width:100%;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.92), rgba(255,255,255,0.78));border-radius:28px;box-shadow:var(--shadow);padding:38px;backdrop-filter: blur(10px);border:1px solid rgba(255,255,255,0.7);animation:cardIn 700ms ease}
+  .col{display:grid;grid-template-columns:1.2fr 0.8fr;gap:28px}
+  @media (max-width:940px){.col{grid-template-columns:1fr;}}
+  @keyframes cardIn{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+  header{display:flex;align-items:center;gap:16px}
+  .logo{width:76px;height:76px;border-radius:22px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-family:Fraunces,serif;font-size:30px;box-shadow:0 12px 28px rgba(255,84,119,0.25);transform:rotate(-4deg)}
+  h1{margin:0;font-family:Fraunces,serif;font-weight:700;color:var(--ink);font-size:30px;letter-spacing:0.2px}
+  p.lead{margin:6px 0 0;color:var(--muted)}
+
+  /* riddles */
+  .riddles{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
+  .riddle{background:linear-gradient(180deg, rgba(255,246,250,0.95), rgba(255,255,255,0.9));padding:18px;border-radius:16px;border:1px solid rgba(255,190,210,0.6);box-shadow:0 16px 30px rgba(255,105,140,0.12);position:relative}
+  .riddle:before{content:"";position:absolute;left:14px;top:14px;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));opacity:0.15}
+  .riddle:after{content:"";position:absolute;right:14px;top:14px;width:70px;height:70px;border-radius:50%;background:radial-gradient(circle at 30% 30%, rgba(255,160,185,0.35), transparent 70%)}
+  .riddle .badge{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:700;margin-bottom:8px;box-shadow:0 10px 18px rgba(255,84,119,0.2)}
+  .riddle label{font-weight:700;margin-bottom:6px;display:block}
+  .riddle .text{color:#3c1f2a;margin-bottom:10px}
+  .riddle input{width:100%;padding:11px 12px 11px 14px;border-radius:12px;border:1px solid rgba(200,180,190,0.6);font-size:15px;background:#fff;transition:border-color 150ms ease, box-shadow 150ms ease}
+  .riddle input:focus{outline:none;border-color:rgba(255,84,119,0.7);box-shadow:0 0 0 4px rgba(255,84,119,0.15)}
+  .riddle .small{font-size:13px;color:#6b5157;margin-top:8px}
+
+  .actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .btn{padding:11px 16px;border-radius:14px;border:0;cursor:pointer;font-weight:700;transition:transform 150ms ease, box-shadow 150ms ease}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:linear-gradient(90deg,var(--accent),#ff6a8f);color:white;box-shadow:0 10px 24px rgba(255,84,119,0.22)}
+  .btn-ghost{background:rgba(255,255,255,0.7);border:1px solid rgba(180,120,140,0.2);color:#4a2b33}
+
+  /* right panel */
+  .panel{padding:18px;border-radius:18px;background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,243,247,0.7));border:1px solid rgba(255,200,215,0.6);position:relative;overflow:hidden}
+  .panel:after{content:"";position:absolute;right:-60px;top:-60px;width:160px;height:160px;background:radial-gradient(circle at 30% 30%, rgba(255,146,176,0.35), transparent 70%)}
+  .panel h3{margin:0 0 8px;color:#3a1924;font-family:Fraunces,serif}
+  .panel p{margin:0;color:#5e3d43}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:linear-gradient(rgba(13,6,9,0.4), rgba(13,6,9,0.2));display:flex;align-items:center;justify-content:center;padding:20px;z-index:60;backdrop-filter:blur(4px)}
+  .modal{width:100%;max-width:600px;background:linear-gradient(180deg,#fff,#fff5f6);border-radius:20px;padding:24px;border:1px solid rgba(255,150,170,0.6);box-shadow:0 34px 80px rgba(43,12,35,0.2);text-align:center;position:relative;overflow:hidden}
+  .modal h2{margin:0 0 8px;font-family:Fraunces,serif;font-size:24px;color:#2b1020}
+  .modal p{margin:0 0 14px;color:#5b3b44}
+  .modal .choices{display:flex;gap:12px;justify-content:center;align-items:center}
+  .choice{padding:12px 18px;border-radius:12px;border:0;font-weight:800;cursor:pointer}
+  .choice.yes{background:linear-gradient(90deg,#ff6a8f,#ff8fb3);color:white}
+  .choice.no{background:linear-gradient(90deg,#fff5f6,#ffffff);border:2px solid #ffd6e2;color:#7a2a3a}
+
+  /* runaway behaviour wrapper */
+  .no-wrap{position:relative;height:48px}
+  .no-wrap .choice.no{position:absolute;left:50%;transform:translateX(-50%);top:0}
+
+  /* success modal */
+  .success{display:grid;place-items:center;padding:10px}
+  .details{background:linear-gradient(90deg,#fff0f4,#fff7f8);padding:12px;border-radius:12px;border:1px dashed #ffb0cc}
+  .heart-big{width:96px;height:96px;margin:8px auto 12px;display:block}
+
+  /* confetti simple */
+  .confetti{position:absolute;inset:0;pointer-events:none}
+  .confetti span{position:absolute;width:10px;height:16px;opacity:0.95;border-radius:3px;transform-origin:center top}
+
+  footer{margin-top:18px;font-size:13px;color:#6b5157;text-align:center}
+
+</style>
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="o1"></span>
+    <span class="o2"></span>
+    <span class="o3"></span>
+  </div>
+  <div class="hearts" aria-hidden="true">
+    <!-- generate hearts via JS -->
+  </div>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="title">
+      <div class="col">
+        <div>
+          <header>
+            <div class="logo">❤</div>
+            <div>
+              <h1 id="title">Разгадай — и получи приглашение</h1>
+              <p class="lead">Ответь на три загадки про любовь — и увидишь моё приглашение.</p>
+            </div>
+          </header>
+
+          <div class="riddles" id="riddles">
+            <div class="riddle" aria-labelledby="r1lbl">
+              <div class="badge">1</div>
+              <label id="r1lbl">Загадка 1 (лёгкая)</label>
+              <div class="text">Я бьюсь без рук и без ног, когда тебя я вижу — громче звук. Что это?</div>
+              <input id="ans1" placeholder="Ваш ответ" autocomplete="off" aria-describedby="hint1" />
+              <div class="small" id="hint1">Подсказка: символ чувств.</div>
+            </div>
+
+            <div class="riddle" aria-labelledby="r2lbl">
+              <div class="badge">2</div>
+              <label id="r2lbl">Загадка 2 (средняя)</label>
+              <div class="text">Невидимая нить между двумя людьми, тянет сильней, чем ветры и струи. Что это?</div>
+              <input id="ans2" placeholder="Ваш ответ" autocomplete="off" aria-describedby="hint2" />
+              <div class="small" id="hint2">Подсказка: чувство, которое связывает.</div>
+            </div>
+
+            <div class="riddle" aria-labelledby="r3lbl">
+              <div class="badge">3</div>
+              <label id="r3lbl">Загадка 3 (сложная)</label>
+              <div class="text">Без слов привет — и обещание в одночасье, встречаются губы — и тает расстояние. Что это?</div>
+              <input id="ans3" placeholder="Ваш ответ" autocomplete="off" aria-describedby="hint3" />
+              <div class="small" id="hint3">Подсказка: короткий, тёплый, без слов.</div>
+            </div>
+
+            <div class="actions">
+              <button class="btn btn-primary" id="checkBtn">Проверить ответы</button>
+              <button class="btn btn-ghost" id="revealBtn">Показать подсказки</button>
+            </div>
+          </div>
+
+          <footer></footer>
+        </div>
+
+        <aside class="panel" aria-label="Панель с рекомендациями">
+          <h3>Как это работает</h3>
+          <p>Когда все три ответа совпадут с ожидаемыми — появится приглашение. Кнопка «Нет» любит убегать :)</p>
+          <p style="margin-top:10px;font-weight:700;color:#7a2a3a">1</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- modal template -->
+  <template id="inviteTpl">
+    <div class="overlay" id="overlay">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="inviteTitle">
+        <h2 id="inviteTitle">Сходим на свидание?</h2>
+        <p>Если да — будет очень приятно. Но смотри: кнопка "Нет" не любит оставаться на месте.</p>
+        <div class="choices">
+          <button class="choice yes" id="yesBtn">Да</button>
+          <div class="no-wrap" style="width:150px;height:48px;">
+            <button class="choice no" id="noBtn">Нет</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="successTpl">
+    <div class="overlay" id="overlay2">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="succTitle">
+        <div class="success">
+          <svg class="heart-big" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21s-7.5-4.5-9.2-7.1C1.7 11.6 3 7.9 6.2 6.4 8.1 5.5 10 6 12 7.7c2-1.7 3.9-2.2 5.8-1.3 3.2 1.5 4.5 5.2 3.4 7.5C19.5 16.5 12 21 12 21z" fill="url(#g)"/>
+            <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#ff6a8f"/><stop offset="1" stop-color="#ffb3c8"/></linearGradient></defs>
+          </svg>
+          <h2 id="succTitle">Ура!</h2>
+          <p class="small">Подтверждаю встречу — все детали ниже:</p>
+          <div class="details" id="details">
+            <strong>?? февраля 2026</strong><br>
+            <span>В твой следующий выходной (напиши заранее)</span>
+            <span>С любовью, Олжас</span>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;">
+            <button class="btn btn-primary" id="copyBtn">Скопировать детали</button>
+            <button class="btn btn-ghost" id="closeSucc">Закрыть</button>
+          </div>
+        </div>
+        <div class="confetti" id="confetti"></div>
+      </div>
+    </div>
+  </template>
+
+<script>
+  // --- correct answers (normalize) ---
+  const correct = ['сердце','любовь','поцелуй'];
+  function norm(s){return (s||'').trim().toLowerCase();}
+
+  // --- helper to show modal ---
+  function showInviteModal(){
+    const tpl = document.getElementById('inviteTpl').content.cloneNode(true);
+    document.body.appendChild(tpl);
+    const overlay = document.getElementById('overlay');
+    const yes = document.getElementById('yesBtn');
+    const no = document.getElementById('noBtn');
+
+    // runaway behaviour
+    const noWrap = no.parentElement;
+    let evadeCount = 0;
+
+    function moveNoRandom(){
+      const wrapRect = noWrap.getBoundingClientRect();
+      const modalRect = noWrap.closest('.modal').getBoundingClientRect();
+      // compute available area inside modal for the button
+      const pad = 12;
+      const maxX = Math.max(0, modalRect.width - wrapRect.width - pad);
+      const maxY = Math.max(0, modalRect.height - wrapRect.height - pad - 40); // keep above bottom
+      const x = Math.floor(Math.random() * (maxX+1));
+      const y = Math.floor(Math.random() * (maxY+1));
+      noWrap.style.transition = 'transform 220ms cubic-bezier(.2,.9,.2,1)';
+      noWrap.style.transform = `translate(${x - (modalRect.width/2 - wrapRect.width/2)}px, ${y}px)`;
+      evadeCount++;
+    }
+
+    // move on hover and on focus (keyboard)
+    no.addEventListener('mouseenter', moveNoRandom);
+    no.addEventListener('focus', moveNoRandom);
+    // also move if user tries to click it
+    no.addEventListener('click', (e)=>{ e.preventDefault(); moveNoRandom(); });
+
+    yes.addEventListener('click', ()=>{
+      overlay.remove();
+      showSuccessModal();
+    });
+
+    // close on outside click if clicked overlay but not modal
+    overlay.addEventListener('click', (ev)=>{ if(ev.target === overlay) overlay.remove(); });
+  }
+
+  function showSuccessModal(){
+    const tpl = document.getElementById('successTpl').content.cloneNode(true);
+    document.body.appendChild(tpl);
+    const overlay2 = document.getElementById('overlay2');
+    const close = document.getElementById('closeSucc');
+    const copyBtn = document.getElementById('copyBtn');
+    const details = document.getElementById('details').innerText;
+
+    copyBtn.addEventListener('click', async()=>{
+      try{ await navigator.clipboard.writeText(details); copyBtn.textContent = 'Скопировано!'; setTimeout(()=>copyBtn.textContent='Скопировать детали',1300);}catch(e){alert('Не удалось скопировать — скопируйте вручную.');}
+    });
+
+    close.addEventListener('click', ()=>{ overlay2.remove(); });
+
+    overlay2.addEventListener('click', (ev)=>{ if(ev.target === overlay2) overlay2.remove(); });
+
+    // confetti generation
+    startConfetti(document.getElementById('confetti'));
+    setTimeout(()=>stopConfetti(), 4200);
+  }
+
+  // --- confetti (simple) ---
+  let confettiTimer;
+  function startConfetti(container){
+    const colors = ['#ff6a8f','#ffb3c8','#ffd6e6','#ffe9f2','#ff88b3'];
+    const w = container.clientWidth || window.innerWidth; const h = container.clientHeight || window.innerHeight;
+    for(let i=0;i<50;i++){
+      const el = document.createElement('span');
+      el.style.left = (Math.random()*100)+'%';
+      el.style.top = (-10 - Math.random()*20)+'%';
+      el.style.width = (6 + Math.random()*10) + 'px';
+      el.style.height = (10 + Math.random()*12) + 'px';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      el.style.transform = `rotate(${Math.random()*360}deg)`;
+      el.style.opacity = '0.95';
+      el.style.transition = 'transform 3s linear, top 3s linear, opacity 3s linear';
+      container.appendChild(el);
+      // animate
+      setTimeout(()=>{
+        el.style.top = (80 + Math.random()*30) + '%';
+        el.style.transform = `translateY(120vh) rotate(${Math.random()*720}deg)`;
+        el.style.opacity = '0.8';
+      }, 20 + Math.random()*300);
+    }
+  }
+  function stopConfetti(){
+    document.querySelectorAll('.confetti span').forEach(s=>s.remove());
+  }
+
+  // --- check answers ---
+  let wrongAttempts = 0;
+  document.getElementById('checkBtn').addEventListener('click', ()=>{
+    const a1 = norm(document.getElementById('ans1').value);
+    const a2 = norm(document.getElementById('ans2').value);
+    const a3 = norm(document.getElementById('ans3').value);
+    const user = [a1,a2,a3];
+    const wrong = [];
+    for(let i=0;i<3;i++) if(user[i] !== correct[i]) wrong.push(i+1);
+    if(wrong.length === 0){
+      wrongAttempts = 0;
+      showInviteModal();
+    } else {
+      wrongAttempts++;
+      // gentle shake animation for wrong fields
+      wrong.forEach(i=>{
+        const el = document.getElementById('ans'+i);
+        el.animate([{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:380});
+      });
+      if(wrongAttempts >= 2){
+        const hints = document.querySelectorAll('.small');
+        hints.forEach(h=>{ h.style.display = 'block'; });
+      }
+      alert('Не всё правильно — проверьте ответы: ' + wrong.join(', '));
+    }
+  });
+
+  document.getElementById('revealBtn').addEventListener('click', ()=>{
+    const hints = document.querySelectorAll('.small');
+    hints.forEach(h=>{ h.style.display = 'block'; h.animate([{opacity:0},{opacity:1}],{duration:300}) });
+  });
+
+  // decorative hearts generation
+  (function makeHearts(){
+    const container = document.querySelector('.hearts');
+    for(let i=0;i<10;i++){
+      const el = document.createElement('div'); el.className='heart';
+      const left = Math.random()*100; const size = 18 + Math.random()*36;
+      el.style.left = left + '%'; el.style.width = size+'px'; el.style.height = size+'px';
+      el.style.animation = `floatUp ${12 + Math.random()*10}s linear ${-Math.random()*10}s infinite`;
+      el.innerHTML = `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7.5-4.5-9.2-7.1C1.7 11.6 3 7.9 6.2 6.4 8.1 5.5 10 6 12 7.7c2-1.7 3.9-2.2 5.8-1.3 3.2 1.5 4.5 5.2 3.4 7.5C19.5 16.5 12 21 12 21z" fill="#ff6a8f"/></svg>`;
+      container.appendChild(el);
+    }
+  })();
+
+  // accessibility: allow keyboard to trigger yes/no movement
+  document.addEventListener('keydown',(e)=>{
+    if(e.key === 'Enter'){
+      // if modals present, do nothing; else try to check answers
+    }
+  });
+
+  // prevent tab trap by ensuring noBtn can be focused but will move on focus
+  // (handled by event listeners when modal opens)
+
+</script>
+</body>
+</html>
